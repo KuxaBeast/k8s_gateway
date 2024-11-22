@@ -81,7 +81,7 @@ func newKubeController(ctx context.Context, c *kubernetes.Clientset, gw *gateway
 				defaultResyncPeriod,
 				cache.Indexers{httpRouteHostnameIndex: httpRouteHostnameIndexFunc},
 			)
-			resource.lookup = lookupHttpRouteIndex(httpRouteController, gatewayController, filters.GatewayClasses)
+			resource.lookup = lookupHttpRouteIndex(httpRouteController, gatewayController, filters.gatewayClasses)
 			ctrl.controllers = append(ctrl.controllers, httpRouteController)
 		}
 
@@ -95,7 +95,7 @@ func newKubeController(ctx context.Context, c *kubernetes.Clientset, gw *gateway
 				defaultResyncPeriod,
 				cache.Indexers{tlsRouteHostnameIndex: tlsRouteHostnameIndexFunc},
 			)
-			resource.lookup = lookupTLSRouteIndex(tlsRouteController, gatewayController, filters.GatewayClasses)
+			resource.lookup = lookupTLSRouteIndex(tlsRouteController, gatewayController, filters.gatewayClasses)
 			ctrl.controllers = append(ctrl.controllers, tlsRouteController)
 		}
 
@@ -109,7 +109,7 @@ func newKubeController(ctx context.Context, c *kubernetes.Clientset, gw *gateway
 				defaultResyncPeriod,
 				cache.Indexers{grpcRouteHostnameIndex: grpcRouteHostnameIndexFunc},
 			)
-			resource.lookup = lookupGRPCRouteIndex(grpcRouteController, gatewayController, filters.GatewayClasses)
+			resource.lookup = lookupGRPCRouteIndex(grpcRouteController, gatewayController, filters.gatewayClasses)
 			ctrl.controllers = append(ctrl.controllers, grpcRouteController)
 		}
 	}
@@ -140,7 +140,7 @@ func newKubeController(ctx context.Context, c *kubernetes.Clientset, gw *gateway
 			defaultResyncPeriod,
 			cache.Indexers{ingressHostnameIndex: ingressHostnameIndexFunc},
 		)
-		resource.lookup = lookupIngressIndex(ingressController, filters.IngressClasses)
+		resource.lookup = lookupIngressIndex(ingressController, filters.ingressClasses)
 		ctrl.controllers = append(ctrl.controllers, ingressController)
 	}
 
@@ -210,7 +210,7 @@ func (gw *Gateway) RunKubeController(ctx context.Context) error {
 		return err
 	}
 
-	gw.Controller = newKubeController(ctx, kubeClient, gwAPIClient, nginxClient, gw.resourceFilters())
+	gw.Controller = newKubeController(ctx, kubeClient, gwAPIClient, nginxClient, gw.resourceFilters)
 	go gw.Controller.run()
 
 	return nil
